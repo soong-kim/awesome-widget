@@ -5,7 +5,7 @@ import Card from 'react-bootstrap/Card';
 
 const Widget = (widget, Header) => (
   <Card>
-    <Card.Header as="H5">{Header}</Card.Header>
+    <Card.Header as="h5">{Header}</Card.Header>
     <Card.Body>
       {widget}
     </Card.Body>
@@ -19,7 +19,7 @@ const Widgets = ({ children }) => (
 );
 
 Widgets.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.arrayOf(PropTypes.element).isRequired,
 };
 
 export default Widgets;
