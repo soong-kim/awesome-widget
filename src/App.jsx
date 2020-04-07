@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Widgets from './components/Widgets';
 import Weather from './widgets/Weather';
-import Currency from './widgets/currency';
+import Currency from './widgets/Currency';
 
 const App = () => (
   <>
