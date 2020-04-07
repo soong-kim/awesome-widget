@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const CurrencyList = (props) => {
-  const { id } = props;
+  const { id, handleOption } = props;
   return (
-    <select name="CURRENCY_LIST" id={id} defaultValue="KRW">
+    <select name="CURRENCY_LIST" id={id} defaultValue="X" onChange={(e) => handleOption(e)}>
+      <option value="X">--Choose a nation--</option>
       <option value="AUD">Austrailia</option>
       <option value="BRL">Brazil</option>
       <option value="CAD">Canada</option>
@@ -28,37 +29,55 @@ const CurrencyList = (props) => {
 
 CurrencyList.propTypes = {
   id: PropTypes.string.isRequired,
+  handleOption: PropTypes.func.isRequired,
 };
 
-const searchPriceInfo = (searchKey) => (
-  fetch(`https://earthquake.kr:23490/query/${searchKey}`, { mode: 'no-cors' })
-    .then((res) => res.json())
-    .then((json) => (json.some((e) => (e === searchKey)) ? json.searchKey[0] : 0))
-    .catch(() => 0)
-);
+const Currency = () => {
+  const [nationFrom, setFrom] = useState('X');
+  const [nationTo, setTo] = useState('X');
+  const [ratio, setRatio] = useState(1);
+  const [input, setInput] = useState(0);
+  const baseUrl = 'https://earthquake.kr:23490/query';
 
-const handleInput = (e) => {
-  const from = document.getElementById('options_from');
-  const to = document.getElementById('options_to');
-  const searchKey = `${from.options[from.selectedIndex].value}${to.options[to.selectedIndex].value}`;
-  const ratio = searchPriceInfo(searchKey);
-  console.log(ratio);
-  if (ratio > 0) {
-    document.getElementById('amount_to').setAttribute('value', ratio * e.target.value);
-  } else {
-    document.getElementById('amount_to').setAttribute('value', 'not implemented');
-  }
+  const updateRatio = () => {
+    if (nationFrom !== 'X' && nationTo !== 'X') {
+      const searchKey = `${nationFrom}${nationTo}`;
+      const url = `${baseUrl}/${searchKey}`;
+      fetch(url)
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.searchKey) {
+            setRatio(json.searchKey[0]);
+          } else {
+            window.alert('제공하지 않는 서비스입니다.');
+          }
+        })
+        .catch((res) => console.error(res));
+    }
+  };
+
+  const handleOptionFrom = (e) => {
+    const { value } = e.target.options[e.target.selectedIndex];
+    setFrom(value);
+    updateRatio();
+  };
+
+  const handleOptionTo = (e) => {
+    const { value } = e.target.options[e.target.selectedIndex];
+    setTo(value);
+    updateRatio();
+  };
+
+  return (
+    <div id="currency">
+      <h4> From </h4>
+      <CurrencyList id="options_from" handleOption={handleOptionFrom} />
+      <input type="text" id="amount_from" size="15" onChange={(e) => setInput(e.target.value)} />
+      <h4> To </h4>
+      <CurrencyList id="options_to" handleOption={handleOptionTo} />
+      {ratio.isLoaded && input.isLoaded && <p value={ratio * input} />}
+    </div>
+  );
 };
-
-const Currency = () => (
-  <div id="currency">
-    <h3> From </h3>
-    <CurrencyList id="options_from" />
-    <input type="text" id="amount_from" size="15" placeholder="1" onChange={(e) => handleInput(e)} />
-    <h3> To </h3>
-    <CurrencyList id="options_to" />
-    <input type="text" id="amount_to" size="15" value="1" readOnly />
-  </div>
-);
 
 export default Currency;
