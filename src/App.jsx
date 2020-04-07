@@ -3,6 +3,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Widgets from './components/Widgets';
 import Weather from './widgets/Weather';
 import Currency from './widgets/Currency';
+import Bus from './widgets/Bus';
 
 const App = () => (
   <>
@@ -12,6 +13,7 @@ const App = () => (
     <Widgets>
       <Weather />
       <Currency />
+      <Bus />
     </Widgets>
   </>
 );
