@@ -4,6 +4,7 @@ import Widgets from './components/Widgets';
 import Weather from './widgets/Weather';
 import Currency from './widgets/Currency';
 import Bus from './widgets/Bus';
+import Speller from './widgets/Speller';
 
 const App = () => (
   <>
@@ -14,6 +15,7 @@ const App = () => (
       <Weather />
       <Currency />
       <Bus />
+      <Speller />
     </Widgets>
   </>
 );
