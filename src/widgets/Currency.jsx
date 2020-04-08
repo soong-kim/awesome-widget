@@ -46,8 +46,8 @@ const Currency = () => {
       fetch(url)
         .then((res) => res.json())
         .then((json) => {
-          if (json.searchKey) {
-            setRatio(json.searchKey[0]);
+          if (Object.prototype.hasOwnProperty.call(json, searchKey)) {
+            setRatio(json[searchKey][0]);
           } else {
             window.alert('제공하지 않는 서비스입니다.');
           }
@@ -56,26 +56,30 @@ const Currency = () => {
     }
   };
 
-  const handleOptionFrom = (e) => {
+  const handleSelected = (e) => {
     const { value } = e.target.options[e.target.selectedIndex];
-    setFrom(value);
+    const { id } = e.target;
+    if (id === 'options_from') {
+      setFrom(value);
+    } else {
+      setTo(value);
+    }
     updateRatio();
   };
 
-  const handleOptionTo = (e) => {
-    const { value } = e.target.options[e.target.selectedIndex];
-    setTo(value);
+  const handleInput = (e) => {
     updateRatio();
+    setInput(e.target.value);
   };
 
   return (
     <div id="currency">
       <h4> From </h4>
-      <CurrencyList id="options_from" handleOption={handleOptionFrom} />
-      <input type="text" id="amount_from" size="15" onChange={(e) => setInput(e.target.value)} />
+      <CurrencyList id="options_from" handleOption={handleSelected} />
+      <input type="text" id="amount_from" size="20" placeholder="0" onChange={(e) => handleInput(e)} />
       <h4> To </h4>
-      <CurrencyList id="options_to" handleOption={handleOptionTo} />
-      {ratio.isLoaded && input.isLoaded && <p value={ratio * input} />}
+      <CurrencyList id="options_to" handleOption={handleSelected} />
+      <input type="text" id="result" value={ratio * input} readOnly />
     </div>
   );
 };
