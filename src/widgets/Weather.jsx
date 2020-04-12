@@ -81,9 +81,6 @@ const Weather = () => {
               type="text"
               placeholder={InitialCity}
               onChange={(e) => setCity(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') fetchWeather(city);
-              }}
             />
             <InputGroup.Append>
               <Button
